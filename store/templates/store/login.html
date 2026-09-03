@@ -1,0 +1,40 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block hero_video %}
+<div id="video-container" class="full-screen-logo">
+  <video autoplay loop muted playsinline>
+    <source src="{% static 'store/media/logo.mp4' %}" type="video/mp4" />
+  </video>
+</div>
+{% endblock %}
+
+{% block content %}
+<section id="login" class="active">
+  <div class="split-layout">
+    <div class="form-container">
+      <h2>LOG IN</h2>
+      <p>Access your FOURTR account</p>
+      
+      <form class="auth-form" method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+          <p style="color: #ff4d4d; font-size: 0.85rem; margin-bottom: 1rem;">
+            Invalid username or password.
+          </p>
+        {% endif %}
+
+        <input type="text" name="username" placeholder="Username" required />
+        <input type="password" name="password" placeholder="Password" required />
+        
+        <button class="btn" type="submit">Sign In</button>
+      </form>
+      
+      <div class="auth-switch">
+        Don't have an account? <a href="{% url 'signup' %}">Create one</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

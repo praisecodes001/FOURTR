@@ -1,0 +1,42 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<section id="cart-page">
+  <div class="cart-container">
+    <h2>YOUR CART</h2>
+
+    {% if cart %}
+      <div class="cart-items">
+        {% for item in cart %}
+          <div class="cart-item">
+            <img src="{% static 'store/images/'|add:item.image %}" alt="{{ item.name }}" />
+            <div class="item-details">
+              <h3>{{ item.name }}</h3>
+              <p>SIZE: {{ item.size }}</p>
+              <p>QTY: {{ item.quantity }}</p>
+              <p class="price">₦{{ item.subtotal|intcomma }}</p>
+            </div>
+            <a href="{% url 'remove_from_cart' item.product_id|stringformat:'s'|add:'_'|add:item.size %}" class="remove-btn">&times;</a>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="cart-summary">
+        <div class="total-row">
+          <span>TOTAL:</span>
+          <span>₦{{ total|intcomma }}</span>
+        </div>
+        <a  href="{% url 'checkout' %}" class="btn checkout-btn">CHECKOUT</a>
+      
+      </div>
+    {% else %}
+      <div class="empty-cart">
+        <p>Your cart is empty.</p>
+        <a href="{% url 'shop' %}" class="btn">EXPLORE SHOP</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

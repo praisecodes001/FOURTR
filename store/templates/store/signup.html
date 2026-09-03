@@ -1,0 +1,37 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block hero_video %}
+<div id="video-container">
+  <video autoplay loop muted playsinline>
+    <source src="{% static 'store/media/logo.mp4' %}" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+</div>
+{% endblock %}
+
+{% block content %}
+<section id="signup" class="active">
+  <div class="split-layout">
+    <div class="form-container">
+      <h2>CREATE ACCOUNT</h2>
+      <p>Join the FOURTR community</p>
+      
+      <form class="auth-form" method="POST" action="{% url 'signup' %}">
+        {% csrf_token %}
+        
+        <input type="text" name="first_name" id="fname" placeholder="Name" required>
+        <input type="text" name="username" id="username" placeholder="Username" required>
+        <input type="email" name="email" id="email" placeholder="Email" required>
+        <input type="password" name="password" id="password" placeholder="Password" required>
+        
+        <button class="btn" type="submit">Register</button>
+      </form>
+      
+      <div class="auth-switch">
+        Already have an account? <a href="{% url 'login' %}">Log in</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

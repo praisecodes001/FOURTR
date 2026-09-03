@@ -1,0 +1,36 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<section id="order-success" style="padding-top: 140px; min-height: 70vh; text-align: center; display: flex; align-items: center; justify-content: center;">
+  <div style="max-width: 600px; padding: 2rem; background: #141414; border: 1px solid #333; border-radius: 8px; width: 100%;">
+    
+    <!-- Success Icon -->
+    <div style="font-size: 3rem; color: #00ff66; margin-bottom: 1rem;">
+      ✓
+    </div>
+
+    <h2 style="color: #fff; letter-spacing: 1px; margin-bottom: 1rem;">ORDER CONFIRMED</h2>
+    
+    <p style="color: #ccc; line-height: 1.6; margin-bottom: 1.5rem;">
+      Thank you for your purchase! Your order has been placed successfully. 
+      A confirmation email with your order details has been sent to your email address.
+    </p>
+
+    {% if order %}
+    <div style="background: #0a0a0a; padding: 1rem; border: 1px solid #222; text-align: left; margin-bottom: 2rem; border-radius: 4px;">
+      <p style="color: #888; margin-bottom: 0.5rem; font-size: 0.9rem;">
+        Order Reference: <strong style="color: #fff;">{{ order.reference }}</strong>
+      </p>
+      <p style="color: #888; margin: 0; font-size: 0.9rem;">
+        Total Amount Paid: <strong style="color: #00ff66;">₦{{ order.total_amount }}</strong>
+      </p>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'shop' %}" class="btn" style="display: inline-block; padding: 0.8rem 2rem; text-decoration: none;">
+      Continue Shopping
+    </a>
+
+  </div>
+</section>
+{% endblock %}

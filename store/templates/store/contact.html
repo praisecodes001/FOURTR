@@ -1,0 +1,67 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<section id="contact-page" style="padding-top: 140px; padding-bottom: 5rem; max-width: 900px; margin: 0 auto; position: relative; z-index: 5;">
+  <div style="border-bottom: 1px solid #222; padding-bottom: 1.5rem; margin-bottom: 3rem;">
+    <p style="font-size: 0.75rem; letter-spacing: 3px; color: #666; margin-bottom: 0.5rem;">CLIENT SUPPORT & INQUIRIES</p>
+    <h2 style="font-size: 2.5rem; letter-spacing: 4px; color: #fff;">FOURTR // CONTACT</h2>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+    
+    <!-- Direct Channels -->
+    <div>
+      <h3 style="font-size: 0.9rem; letter-spacing: 2px; color: #fff; margin-bottom: 1.5rem;">DIRECT CHANNELS</h3>
+      
+      <div style="margin-bottom: 2rem;">
+        <p style="color: #666; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 0.25rem;">DISPATCH & ORDERS (WHATSAPP)</p>
+        <p style="color: #fff; font-size: 1rem;"><a href="https://wa.me/2347084271118" target="_blank" style="color: #fff; text-decoration: none;">+234 708 427 1118</a></p>
+      </div>
+
+      <div style="margin-bottom: 2rem;">
+        <p style="color: #666; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 0.25rem;">EMAIL SUPPORT</p>
+        <p style="color: #fff; font-size: 1rem;"><a href="mailto:4trfiles@gmail.com" style="color: #fff; text-decoration: none;">4trfiles@gmail.com</a></p>
+      </div>
+
+      <div style="margin-bottom: 2rem;">
+        <p style="color: #666; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 0.25rem;">RESPONSE TIME</p>
+        <p style="color: #888; font-size: 0.85rem; line-height: 1.5;">Allday Everyday<br>Replies usually within 2-4 hours.</p>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div style="background: #141414; border: 1px solid #222; padding: 2rem;">
+      <h3 style="font-size: 0.9rem; letter-spacing: 2px; color: #fff; margin-bottom: 1.5rem;">SEND A TRANSMISSION</h3>
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div style="background: #003311; color: #00ff66; padding: 0.75rem; font-size: 0.8rem; margin-bottom: 1rem; border: 1px solid #00ff66;">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      <form method="POST" action="{% url 'contact' %}">
+        {% csrf_token %}
+        <div style="margin-bottom: 1.25rem;">
+          <label style="display: block; font-size: 0.75rem; color: #888; letter-spacing: 1px; margin-bottom: 0.5rem;">NAME</label>
+          <input type="text" name="name" required style="width: 100%; background: #0a0a0a; border: 1px solid #333; color: #fff; padding: 0.75rem; font-size: 0.85rem; outline: none;" />
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+          <label style="display: block; font-size: 0.75rem; color: #888; letter-spacing: 1px; margin-bottom: 0.5rem;">EMAIL ADDRESS</label>
+          <input type="email" name="email" required style="width: 100%; background: #0a0a0a; border: 1px solid #333; color: #fff; padding: 0.75rem; font-size: 0.85rem; outline: none;" />
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-size: 0.75rem; color: #888; letter-spacing: 1px; margin-bottom: 0.5rem;">MESSAGE / INQUIRY</label>
+          <textarea name="message" rows="4" required style="width: 100%; background: #0a0a0a; border: 1px solid #333; color: #fff; padding: 0.75rem; font-size: 0.85rem; outline: none; resize: vertical;"></textarea>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%; text-align: center;">SEND MESSAGE</button>
+      </form>
+      
+    </div>
+
+  </div>
+</section>
+{% endblock %}

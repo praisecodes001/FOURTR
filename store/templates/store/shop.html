@@ -1,0 +1,26 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<section id="shop-page">
+  <div class="shop-header">
+    <h2>COLLECTION</h2>
+    <p>FOURTR ESSENTIALS</p>
+  </div>
+
+  <div class="product-grid">
+    {% for product in products %}
+      <a href="{% url 'product_detail' product.id %}" class="product-card-link">
+        <div class="product-card">
+          <div class="product-image">
+            <img src="{% static 'store/images/'|add:product.image %}" alt="{{ product.name }}" />
+          </div>
+          <h3>{{ product.name }}</h3>
+          <p class="price">₦{{ product.price|intcomma }}</p>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}FOURTR{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'store/css/style.css' %}" />
+</head>
+<body>
+  <nav class="navbar">
+  <a href="{% url 'home' %}" class="brand">FOURTR</a>
+
+  <!-- Hamburger Toggle Icon (Mobile Only) -->
+  <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+   <ul class="nav-links" id="nav-links">
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'shop' %}">Shop</a></li>
+      {% if user.is_authenticated and user.is_superuser %}
+        <a href="{% url 'merchant_dashboard' %}">DASHBOARD</a>
+      {% endif %}
+      <li><a href="{% url 'about' %}">About</a></li>
+      <li><a href="{% url 'cart' %}">Cart</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
+      {% if user.is_authenticated %}
+        <li><a href="{% url 'logout' %}">Log Out</a></li>
+      {% else %}
+        <li><a href="{% url 'login' %}">Log In</a></li>
+      {% endif %}
+    </ul>
+
+</nav>
+
+
+
+  {% block hero_video %}{% endblock %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const navLinks = document.getElementById('nav-links');
+
+  menuToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+  });
+</script>
+</body>
+</html>
