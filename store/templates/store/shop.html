@@ -14,7 +14,8 @@
       <a href="{% url 'product_detail' product.id %}" class="product-card-link">
         <div class="product-card">
           <div class="product-image">
-            <img src="{% static 'store/images/'|add:product.image %}" alt="{{ product.name }}" />
+
+            <img src="{% static 'store/images/'|add:product.image_filename %}" alt="{{ product.name }}" />
           </div>
           <h3>{{ product.name }}</h3>
           <p class="price">₦{{ product.price|intcomma }}</p>
@@ -26,6 +27,3 @@
 {% endblock %}
 
 
-git add . 
-git commit -m "Fetch shop products from database instead of hardcoded dictionary"
-git push origin main
