@@ -53,20 +53,23 @@
         <div style="margin-bottom: 1.5rem;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
             <label style="color: #888; font-size: 0.8rem; letter-spacing: 1px;">SELECT SIZE</label>
-            <a href="#" id="open-size-chart" style="color: #fff; font-size: 0.75rem; letter-spacing: 1px; text-decoration: underline;">SIZE GUIDE</a>
+            <a href="#" class="open-size-chart-btn" 
+              data-size-chart="{% if 'polo' in item.name.lower %}{% static 'store/images/size_chart.JPG' %}{% else %}{% static 'store/images/size_chart2.JPG' %}{% endif %}" 
+              style="color: #fff; font-size: 0.75rem; letter-spacing: 1px; text-decoration: underline;">
+              SIZE GUIDE
+            </a>          
           </div>
           
           <select name="size" required style="width: 100%; background: #141414; border: 1px solid #333; color: #fff; padding: 0.8rem; font-size: 0.85rem; outline: none;">
-  <option value="" disabled selected>CHOOSE A SIZE</option>
-
-  {% if item.has_2xs %}<option value="2XS">2XSMALL</option>{% endif %}
-  {% if item.has_xs %}<option value="XS">XSMALL</option>{% endif %}
-  {% if item.has_s %}<option value="S">SMALL</option>{% endif %}
-  {% if item.has_m %}<option value="M">MEDIUM</option>{% endif %}
-  {% if item.has_l %}<option value="L">LARGE</option>{% endif %}
-  {% if item.has_xl %}<option value="XL">X-LARGE</option>{% endif %}
-  {% if item.has_2xl %}<option value="2XL">XX-LARGE</option>{% endif %}
-</select>
+            <option value="" disabled selected>CHOOSE A SIZE</option>
+            {% if item.has_2xs %}<option value="2XS">2XSMALL</option>{% endif %}
+            {% if item.has_xs %}<option value="XS">XSMALL</option>{% endif %}
+            {% if item.has_s %}<option value="S">SMALL</option>{% endif %}
+            {% if item.has_m %}<option value="M">MEDIUM</option>{% endif %}
+            {% if item.has_l %}<option value="L">LARGE</option>{% endif %}
+            {% if item.has_xl %}<option value="XL">X-LARGE</option>{% endif %}
+            {% if item.has_2xl %}<option value="2XL">XX-LARGE</option>{% endif %}
+          </select>
         </div>
 
         <button type="submit" class="btn" style="width: 100%;">Add to Cart</button>
@@ -80,7 +83,8 @@
     <div style="position: relative; max-width: 90%; max-height: 90%; background: #141414; border: 1px solid #333; padding: 1.5rem;">
       <button id="close-size-chart" style="position: absolute; top: 10px; right: 15px; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
       <p style="color: #888; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 1rem;">FOURTR // SIZE MEASUREMENTS</p>
-      <img src="{% static 'store/images/size_chart.JPG' %}" alt="FOURTR Size Guide" style="max-width: 100%; max-height: 70vh; display: block; margin: 0 auto;" />
+      
+      <img id="size-chart-img" src="" alt="FOURTR Size Guide" style="max-width: 100%; max-height: 70vh; display: block; margin: 0 auto;" />
     </div>
   </div>
 </section>
@@ -118,9 +122,37 @@
   }
 
   // Size Guide Modal Logic
-  const modal = document.getElementById('size-modal');
-  document.getElementById('open-size-chart').onclick = (e) => { e.preventDefault(); modal.style.display = 'flex'; };
-  document.getElementById('close-size-chart').onclick = () => { modal.style.display = 'none'; };
-  window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('size-modal');
+    const modalImg = document.getElementById('size-chart-img');
+    const closeBtn = document.getElementById('close-size-chart');
+    const sizeGuideLinks = document.querySelectorAll('.open-size-chart-btn');
+
+    sizeGuideLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const chartUrl = link.getAttribute('data-size-chart');
+        
+        if (modalImg && chartUrl) {
+          modalImg.src = chartUrl;
+          modal.style.display = 'flex';
+        }
+      });
+    });
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+    }
+
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    }
+  });
 </script>
 {% endblock %}

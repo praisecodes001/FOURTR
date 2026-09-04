@@ -114,6 +114,8 @@ def user_signup(request):
         return redirect('home')
         
     return render(request, 'store/signup.html')
+
+
 def user_logout(request):
     logout(request)
     return redirect('home')
@@ -121,33 +123,11 @@ def user_logout(request):
 
 
 
-PRODUCTS = {
-    1: {
-        'id': 1,
-        'name': '4TR FACE POLO',
-        'price': 35000,
-        'image': 'face-polo.JPG',
-        'description': 'Premium heavyweight polo featuring the custom 4TR face graphic.'
-    },
-    2: {
-        'id': 2,
-        'name': '4TR CHINESE TEE (BLACK)',
-        'price': 18000,
-        'image': 'chinese-tee.JPG',
-        'description': 'Heavyweight organic cotton tee with signature Chinese typography.'
-    },
-    3: {
-        'id': 3,
-        'name': '4TR CHINESE TEE (BLUE)',
-        'price': 18000,
-        'image': 'chinese-tee-blue.JPG',
-        'description': 'Heavyweight organic cotton tee with signature Chinese typography.'
-    },
-}
 
 @login_required(login_url='login')
 def shop(request):
-    return render(request, 'store/shop.html', {'products': PRODUCTS.values()})
+    products = Product.objects.filter(is_active=True)
+    return render(request, 'store/shop.html', {'products': PRODUCTS})
 
 def product_detail(request, item_id):
     item = get_object_or_404(Product.objects.prefetch_related('extra_images'), id=item_id)
