@@ -133,9 +133,11 @@ def product_detail(request, item_id):
     item = get_object_or_404(Product.objects.prefetch_related('extra_images'), id=item_id)
     return render(request, 'store/product_detail.html', {'item': item})
 
-    
+
 def add_to_cart(request, item_id):
     if request.method == 'POST':
+        # Fetch item directly from live database
+        product = get_object_or_404(Product, id=item_id)
         size = request.POST.get('size', 'M')
         cart = request.session.get('cart', {})
         
@@ -146,9 +148,9 @@ def add_to_cart(request, item_id):
         else:
             cart[cart_key] = {
                 'product_id': item_id,
-                'name': PRODUCTS[item_id]['name'],
-                'price': PRODUCTS[item_id]['price'],
-                'image': PRODUCTS[item_id]['image'],
+                'name': product.name,
+                'price': float(product.price),
+                'image': product.image_filename,  # Uses your database field
                 'size': size,
                 'quantity': 1
             }
@@ -161,9 +163,8 @@ def cart_view(request):
     total = 0
     
     for item in cart.values():
-        # Clean price in case legacy string data with commas exists in session
         raw_price = str(item['price']).replace(',', '').replace('₦', '').strip()
-        price = int(raw_price)
+        price = int(float(raw_price))
         quantity = int(item['quantity'])
         
         item['price'] = price
@@ -179,7 +180,7 @@ def remove_from_cart(request, cart_key):
         request.session['cart'] = cart
     return redirect('cart')
 
-
+    
 def checkout(request):
     cart = request.session.get('cart', {})
     total = sum(int(str(item['price']).replace(',', '')) * int(item['quantity']) for item in cart.values())
