@@ -180,10 +180,11 @@ def remove_from_cart(request, cart_key):
         request.session['cart'] = cart
     return redirect('cart')
 
-    
 def checkout(request):
     cart = request.session.get('cart', {})
-    total = sum(int(str(item['price']).replace(',', '')) * int(item['quantity']) for item in cart.values())
+    
+    # Cast via float first to safely convert strings like '35000.0' into ints
+    total = sum(int(float(str(item['price']).replace(',', '').replace('₦', '').strip())) * int(item['quantity']) for item in cart.values())
     
     # Paystack works in kobo (multiply Naira by 100)
     paystack_amount = total * 100 
