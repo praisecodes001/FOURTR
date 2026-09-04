@@ -127,12 +127,13 @@ def user_logout(request):
 @login_required(login_url='login')
 def shop(request):
     products = Product.objects.filter(is_active=True)
-    return render(request, 'store/shop.html', {'products': PRODUCTS})
+    return render(request, 'store/shop.html', {'products': products}) # Capitalization fixed
 
 def product_detail(request, item_id):
     item = get_object_or_404(Product.objects.prefetch_related('extra_images'), id=item_id)
     return render(request, 'store/product_detail.html', {'item': item})
 
+    
 def add_to_cart(request, item_id):
     if request.method == 'POST':
         size = request.POST.get('size', 'M')
