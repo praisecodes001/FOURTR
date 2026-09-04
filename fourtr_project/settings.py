@@ -79,10 +79,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'store' / 'static']
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Paystack Configuration
-PAYSTACK_PUBLIC_KEY = 'pk_test_b0af505b37f0514fb22f92109f0eb266b29900ad'
-PAYSTACK_SECRET_KEY = 'sk_test_fe6ea52fd36b5a07d3e529e2a0395c34f5648535'
-
+# Read keys securely from environment variables instead of hardcoding
+PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY', 'default_fallback_key')
+PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'default_fallback_key')
 
 
 # Official recipient address for brand alerts & contact inquiries
