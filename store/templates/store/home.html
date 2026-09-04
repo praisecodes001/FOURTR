@@ -3,22 +3,24 @@
 
 {% block hero_video %}
 <div id="video-container" class="full-screen-logo">
-  <video autoplay loop muted playsinline webkit-playsinline >
+  <video id="hero-logo-video" autoplay loop muted playsinline webkit-playsinline poster="{% static 'store/images/logo-poster.jpg' %}">
     <source src="{% static 'store/media/logo.mp4' %}" type="video/mp4" />
   </video>
 </div>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const video = document.getElementById('hero-logo-video');
+    
+    // Fallback: Start playback on user's first touch/scroll
+    const startVideo = function () {
+      if (video && video.paused) {
+        video.play().catch(() => {});
+      }
+    };
+
+    document.addEventListener('touchstart', startVideo, { once: true });
+    document.addEventListener('scroll', startVideo, { once: true });
+  });
+</script>
 {% endblock %}
-
-{% block content %}
-<section id="home" class="hero-only-section">
-  {% if user.is_authenticated %}
-    <div class="user-welcome">
-      <p>WELCOME, {{ user.first_name|default:user.username|upper }}</p>
-    </div>
-  {% endif %}
-</section>
-{% endblock %}
-
-
-
