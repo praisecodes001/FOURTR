@@ -83,38 +83,23 @@ def user_login(request):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            login(request, user)
-            return redirect('home')
+            # Enforce that only superusers are permitted to log in
+            if user.is_superuser:
+                login(request, user)
+                return redirect('merchant_dashboard')
+            else:
+                messages.error(request, 'Access restricted to administrative accounts only.')
+                return redirect('login')
+        else:
+            messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm()
     return render(request, 'store/login.html', {'form': form})
 
 def user_signup(request):
-    if request.method == 'POST':
-        fname = request.POST.get('first_name')
-        uname = request.POST.get('username')
-        email = request.POST.get('email')
-        pwd = request.POST.get('password')
-
-        # Check if username already exists
-        if User.objects.filter(username=uname).exists():
-            messages.error(request, 'Username is already taken.')
-            return render(request, 'store/signup.html')
-
-        # Create user with raw template input values
-        user = User.objects.create_user(
-            username=uname, 
-            email=email, 
-            password=pwd, 
-            first_name=fname
-        )
-        
-        # Log user in and redirect to home page
-        login(request, user)
-        return redirect('home')
-        
-    return render(request, 'store/signup.html')
-
+    # Public registrations are disabled
+    messages.error(request, 'Public registration is currently disabled.')
+    return redirect('home')
 
 def user_logout(request):
     logout(request)
