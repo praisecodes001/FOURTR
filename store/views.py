@@ -124,7 +124,7 @@ def user_logout(request):
 
 
 
-@login_required(login_url='login')
+
 def shop(request):
     products = Product.objects.filter(is_active=True)
     return render(request, 'store/shop.html', {'products': products}) # Capitalization fixed
