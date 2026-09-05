@@ -11,7 +11,6 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('shop/<int:item_id>/', views.product_detail, name='product_detail'),
     path('login/', views.user_login, name='login'),
-    path('signup/', views.user_signup, name='signup'),
     path('logout/', views.user_logout, name='logout'),
     path('checkout/', views.checkout, name='checkout'),
     path('process-checkout/', views.process_checkout, name='process_checkout'),
