@@ -298,9 +298,7 @@ def process_checkout(request):
         else:
             shipping_fee = Decimal('10000.00')
 
-        if state.lower() == 'test':
-            shipping_fee  = Decimal('100')   
-
+        
         # 3. Calculate Final Grand Total
         grand_total = items_subtotal + shipping_fee
 
