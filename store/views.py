@@ -186,17 +186,16 @@ def checkout(request):
 # store/views.py
 @csrf_exempt
 def verify_payment(request):
-    # Extract params sent by Paystack callback URL
+    # Paystack appends ?reference=4TR-... to the callback URL automatically
     reference = request.GET.get('reference')
-    order_id = request.GET.get('order_id')
 
-    if not reference or not order_id:
+    if not reference:
         messages.error(request, "Invalid payment verification parameters.")
         return redirect('checkout')
 
-    order = get_object_or_404(Order, id=order_id)
+    # Look up the order using the unique reference string generated at checkout
+    order = get_object_or_404(Order, reference=reference)
 
-    # Paystack verification API
     headers = {"Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"}
     url = f"https://api.paystack.co/transaction/verify/{reference}"
 
@@ -205,7 +204,7 @@ def verify_payment(request):
         res_data = response.json()
 
         if res_data.get('status') and res_data['data']['status'] == 'success':
-            # Update order state in database
+            # Mark order as paid in PostgreSQL
             order.paid = True
             order.status = 'Paid'
             order.save()
@@ -217,7 +216,6 @@ def verify_payment(request):
             if 'cart' in request.session:
                 del request.session['cart']
 
-            # Redirect to order_success page
             return redirect('order_success')
         else:
             messages.error(request, "Payment verification failed or was declined.")
@@ -227,40 +225,6 @@ def verify_payment(request):
         print(f"VERIFICATION ERROR: {str(e)}")
         messages.error(request, "Could not verify payment with Paystack.")
         return redirect('checkout')
-
-
-
-
-def order_success(request):
-    last_ref = request.session.get('last_order_ref')
-    order = None
-
-    if last_ref:
-        order = Order.objects.filter(reference=last_ref).first()
-
-    context = {
-        'order': order,
-    }
-    return render(request, 'store/order_success.html', context)
-
-
-@staff_member_required(login_url='login')
-def merchant_dashboard(request):
-    total_revenue = Order.objects.filter(status='Paid').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
-    total_orders = Order.objects.filter(status='Paid').count()
-    recent_orders = Order.objects.prefetch_related('items').order_by('-created_at')[:15]
-    
-    # Top selling breakdown
-    top_items = OrderItem.objects.values('product_name').annotate(total_sold=Sum('quantity')).order_by('-total_sold')[:5]
-
-    context = {
-        'total_revenue': total_revenue,
-        'total_orders': total_orders,
-        'recent_orders': recent_orders,
-        'top_items': top_items,
-    }
-    return render(request, 'store/merchant_dashboard.html', context)    
-
 
 
 def process_checkout(request):
@@ -283,7 +247,6 @@ def process_checkout(request):
         else:
             shipping_fee = Decimal('10000.00')
 
-        
         # 3. Calculate Final Grand Total
         grand_total = items_subtotal + shipping_fee
 
@@ -320,7 +283,8 @@ def process_checkout(request):
 
         # 6. Initialize Paystack using the Grand Total (Converted to Kobo)
         amount_in_kobo = int(grand_total * 100)
-        callback_url = request.build_absolute_uri(f'/verify-payment/?order_id={order.id}')
+        # Clean callback URL: Paystack automatically appends ?reference=4TR-...
+        callback_url = request.build_absolute_uri('/verify-payment/')
 
         paystack_url = "https://api.paystack.co/transaction/initialize"
         headers = {
@@ -349,3 +313,36 @@ def process_checkout(request):
             return redirect('checkout')
 
     return redirect('checkout')
+
+
+def order_success(request):
+    last_ref = request.session.get('last_order_ref')
+    order = None
+
+    if last_ref:
+        order = Order.objects.filter(reference=last_ref).first()
+
+    context = {
+        'order': order,
+    }
+    return render(request, 'store/order_success.html', context)
+
+
+@staff_member_required(login_url='login')
+def merchant_dashboard(request):
+    total_revenue = Order.objects.filter(status='Paid').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+    total_orders = Order.objects.filter(status='Paid').count()
+    recent_orders = Order.objects.prefetch_related('items').order_by('-created_at')[:15]
+    
+    # Top selling breakdown
+    top_items = OrderItem.objects.values('product_name').annotate(total_sold=Sum('quantity')).order_by('-total_sold')[:5]
+
+    context = {
+        'total_revenue': total_revenue,
+        'total_orders': total_orders,
+        'recent_orders': recent_orders,
+        'top_items': top_items,
+    }
+    return render(request, 'store/merchant_dashboard.html', context)    
+
+
