@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'store',
+    'maintenance_mode',
 ]
 
 MIDDLEWARE = [
@@ -37,6 +38,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'maintenance_mode.middleware.MaintenanceModeMiddleware',
 ]
 
 ROOT_URLCONF = 'fourtr_project.urls'
@@ -98,3 +100,6 @@ DEFAULT_FROM_EMAIL = 'FOURTR <orders@fourtr.com>'
 # OPTION 1: Local Testing (Prints email to terminal)
 # ------------------------------------------
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+MAINTENANCE_MODE = True  # Set to False when you're done working
