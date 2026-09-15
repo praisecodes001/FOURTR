@@ -86,8 +86,11 @@ STATICFILES_DIRS = [BASE_DIR / 'store' / 'static']
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Read keys securely from environment variables instead of hardcoding
-PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY', 'default_fallback_key')
-PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'default_fallback_key')
+#PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY', 'default_fallback_key')
+#PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'default_fallback_key')
+PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY', 'pk_test_b0af505b37f0514fb22f92109f0eb266b29900ad')
+PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'sk_test_fe6ea52fd36b5a07d3e529e2a0395c34f5648535')
+
 
 
 # Official recipient address for brand alerts & contact inquiries
@@ -102,7 +105,7 @@ DEFAULT_FROM_EMAIL = 'FOURTR <orders@fourtr.com>'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
-MAINTENANCE_MODE = True  # Set to False when you're done working
+MAINTENANCE_MODE = False  # Set to False when you're done working
 
 MAINTENANCE_MODE_IGNORE_ADMIN_SITE = True
 MAINTENANCE_MODE_IGNORE_SUPERUSER = True
