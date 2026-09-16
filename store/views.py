@@ -328,14 +328,27 @@ def order_success(request):
     return render(request, 'store/order_success.html', context)
 
 
+
+
 @staff_member_required(login_url='login')
 def merchant_dashboard(request):
-    total_revenue = Order.objects.filter(status='Paid').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
-    total_orders = Order.objects.filter(status='Paid').count()
-    recent_orders = Order.objects.prefetch_related('items').order_by('-created_at')[:15]
+    # Base queryset for successfully paid orders only
+    paid_orders = Order.objects.filter(paid=True)
+
+    # Calculate revenue and total count based strictly on paid transactions
+    total_revenue = paid_orders.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+    total_orders = paid_orders.count()
     
-    # Top selling breakdown
-    top_items = OrderItem.objects.values('product_name').annotate(total_sold=Sum('quantity')).order_by('-total_sold')[:5]
+    # Fetch the 15 most recent paid orders (excluding unpaid/abandoned checkouts)
+    recent_orders = paid_orders.prefetch_related('items').order_by('-created_at')[:15]
+    
+    # Calculate top-selling items using only items from paid orders
+    top_items = (
+        OrderItem.objects.filter(order__paid=True)
+        .values('product_name')
+        .annotate(total_sold=Sum('quantity'))
+        .order_by('-total_sold')[:5]
+    )
 
     context = {
         'total_revenue': total_revenue,
@@ -343,6 +356,4 @@ def merchant_dashboard(request):
         'recent_orders': recent_orders,
         'top_items': top_items,
     }
-    return render(request, 'store/merchant_dashboard.html', context)    
-
-
+    return render(request, 'store/merchant_dashboard.html', context)
