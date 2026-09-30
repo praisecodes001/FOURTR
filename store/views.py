@@ -127,7 +127,11 @@ def add_to_cart(request, item_id):
         cart = request.session.get('cart', {})
         
         cart_key = f"{item_id}_{size}"
-        
+
+        if not product.is_available:
+            messages.error(request, f"Sales for {product.name} start on October 1st!")
+            return redirect('product_detail', slug=product.slug)
+
         if cart_key in cart:
             cart[cart_key]['quantity'] += 1
         else:

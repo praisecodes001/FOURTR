@@ -18,10 +18,16 @@ class Product(models.Model):
     has_xl = models.BooleanField(default=True)
     has_2xl = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+    available_at = models.DateTimeField(null=True, blank=True)
+
     def __str__(self):
         return self.name
-
+    @property
+    def is_available(self):
+        """Returns True if the launch date has passed or no launch date is set."""
+        if self.available_at:
+            return timezone.now() >= self.available_at
+        return True
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='extra_images', on_delete=models.CASCADE)

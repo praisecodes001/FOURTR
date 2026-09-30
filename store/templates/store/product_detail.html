@@ -47,33 +47,46 @@
       <p class="detail-price" style="font-size: 1.3rem; color: #fff; margin: 0.5rem 0 1.5rem 0;">₦{{ item.price|intcomma }}</p>
       <p class="detail-description" style="color: #aaa; font-size: 0.9rem; line-height: 1.6; margin-bottom: 2rem;">{{ item.description }}</p>
 
-      <form class="add-to-cart-form" method="POST" action="{% url 'add_to_cart' item.id %}">
-        {% csrf_token %}
-        
-        <div style="margin-bottom: 1.5rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-            <label style="color: #888; font-size: 0.8rem; letter-spacing: 1px;">SELECT SIZE</label>
-            <a href="#" class="open-size-chart-btn" 
-              data-size-chart="{% if 'polo' in item.name.lower %}{% static 'store/images/size_chart.JPG' %}{% else %}{% static 'store/images/size_chart2.JPG' %}{% endif %}" 
-              style="color: #fff; font-size: 0.75rem; letter-spacing: 1px; text-decoration: underline;">
-              SIZE GUIDE
-            </a>          
+      {% if item.is_purchasable %}
+        <!-- PURCHASABLE FORM -->
+        <form class="add-to-cart-form" method="POST" action="{% url 'add_to_cart' item.id %}">
+          {% csrf_token %}
+          
+          <div style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <label style="color: #888; font-size: 0.8rem; letter-spacing: 1px;">SELECT SIZE</label>
+              <a href="#" class="open-size-chart-btn" 
+                data-size-chart="{% if 'polo' in item.name.lower %}{% static 'store/images/size_chart.JPG' %}{% else %}{% static 'store/images/size_chart2.JPG' %}{% endif %}" 
+                style="color: #fff; font-size: 0.75rem; letter-spacing: 1px; text-decoration: underline;">
+                SIZE GUIDE
+              </a>          
+            </div>
+            
+            <select name="size" required style="width: 100%; background: #141414; border: 1px solid #333; color: #fff; padding: 0.8rem; font-size: 0.85rem; outline: none;">
+              <option value="" disabled selected>CHOOSE A SIZE</option>
+              {% if item.has_2xs %}<option value="2XS">2XSMALL</option>{% endif %}
+              {% if item.has_xs %}<option value="XS">XSMALL</option>{% endif %}
+              {% if item.has_s %}<option value="S">SMALL</option>{% endif %}
+              {% if item.has_m %}<option value="M">MEDIUM</option>{% endif %}
+              {% if item.has_l %}<option value="L">LARGE</option>{% endif %}
+              {% if item.has_xl %}<option value="XL">X-LARGE</option>{% endif %}
+              {% if item.has_2xl %}<option value="2XL">XX-LARGE</option>{% endif %}
+            </select>
           </div>
           
-          <select name="size" required style="width: 100%; background: #141414; border: 1px solid #333; color: #fff; padding: 0.8rem; font-size: 0.85rem; outline: none;">
-            <option value="" disabled selected>CHOOSE A SIZE</option>
-            {% if item.has_2xs %}<option value="2XS">2XSMALL</option>{% endif %}
-            {% if item.has_xs %}<option value="XS">XSMALL</option>{% endif %}
-            {% if item.has_s %}<option value="S">SMALL</option>{% endif %}
-            {% if item.has_m %}<option value="M">MEDIUM</option>{% endif %}
-            {% if item.has_l %}<option value="L">LARGE</option>{% endif %}
-            {% if item.has_xl %}<option value="XL">X-LARGE</option>{% endif %}
-            {% if item.has_2xl %}<option value="2XL">XX-LARGE</option>{% endif %}
-          </select>
+          <button type="submit" class="btn" style="width: 100%;">Add to Cart</button>
+        </form>
+      {% else %}
+        <!-- DISABLED UNTIL LAUNCH BUTTON -->
+        <div style="margin-top: 1.5rem;">
+          <button class="btn" disabled style="width: 100%; background: #333; color: #888; border: 1px solid #444; cursor: not-allowed; padding: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">
+            AVAILABLE OCTOBER 1ST
+          </button>
+          <p style="color: #666; font-size: 0.8rem; margin-top: 0.75rem; text-align: center; letter-spacing: 1px;">
+            SALES OPEN TOMORROW
+          </p>
         </div>
-
-        <button type="submit" class="btn" style="width: 100%;">Add to Cart</button>
-      </form>
+      {% endif %}
     </div>
 
   </div>
