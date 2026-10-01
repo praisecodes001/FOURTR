@@ -27,6 +27,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from .models import Product, Order, OrderItem
 from django.db.models import Sum, Count
+from django.db.models import F
 
 def home(request):
     return render(request, 'store/home.html')
@@ -110,9 +111,12 @@ def user_logout(request):
 
 
 
+
 def shop(request):
-    products = Product.objects.filter(is_active=True)
-    return render(request, 'store/shop.html', {'products': products}) # Capitalization fixed
+    # Put products with launch dates first, sorted newest first, then remaining products
+    products = Product.objects.all().order_by(F('available_at').desc(nulls_last=True), '-id')
+    
+    return render(request, 'store/shop.html', {'products': products})
 
 def product_detail(request, item_id):
     item = get_object_or_404(Product.objects.prefetch_related('extra_images'), id=item_id)
