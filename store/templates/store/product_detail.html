@@ -9,6 +9,13 @@
     <!-- SLIDESHOW CONTAINER -->
     <div class="detail-image" style="position: relative; flex: 1; min-width: 320px; max-width: 500px; overflow: hidden; border: 1px solid #222;">
       
+      <!-- OUT OF STOCK OVERLAY BADGE -->
+      {% if not item.is_active %}
+        <div style="position: absolute; top: 15px; left: 15px; background: rgba(220, 38, 38, 0.9); color: #fff; padding: 6px 12px; font-size: 0.75rem; font-weight: bold; letter-spacing: 1.5px; z-index: 5; text-transform: uppercase;">
+          OUT OF STOCK
+        </div>
+      {% endif %}
+
       <!-- Image Slides Container -->
       <div class="slides-wrapper">
         <!-- Slide 0: Primary Image -->
@@ -44,7 +51,15 @@
     <div class="detail-info" style="flex: 1; min-width: 300px;">
       <a href="{% url 'shop' %}" class="back-link" style="color: #666; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-bottom: 1rem;">&larr; BACK TO SHOP</a>
       <h2 style="font-size: 2rem; color: #fff; letter-spacing: 2px;">{{ item.name }}</h2>
-      <p class="detail-price" style="font-size: 1.3rem; color: #fff; margin: 0.5rem 0 1.5rem 0;">₦{{ item.price|intcomma }}</p>
+      
+      <div style="display: flex; align-items: center; gap: 1rem; margin: 0.5rem 0 1.5rem 0;">
+        <p class="detail-price" style="font-size: 1.3rem; color: #fff; margin: 0;">₦{{ item.price|intcomma }}</p>
+        
+        {% if not item.is_active %}
+          <span style="color: #ef4444; font-size: 0.85rem; font-weight: bold; letter-spacing: 1px;">[ OUT OF STOCK ]</span>
+        {% endif %}
+      </div>
+
       <p class="detail-description" style="color: #aaa; font-size: 0.9rem; line-height: 1.6; margin-bottom: 2rem;">{{ item.description }}</p>
 
       <form class="add-to-cart-form" method="POST" action="{% url 'add_to_cart' item.id %}">
@@ -59,19 +74,29 @@
             </a>          
           </div>
           
-          <select name="size" required style="width: 100%; background: #141414; border: 1px solid #333; color: #fff; padding: 0.8rem; font-size: 0.85rem; outline: none;">
-            <option value="" disabled selected>CHOOSE A SIZE</option>
-            {% if item.has_2xs %}<option value="2XS">2XSMALL</option>{% endif %}
-            {% if item.has_xs %}<option value="XS">XSMALL</option>{% endif %}
-            {% if item.has_s %}<option value="S">SMALL</option>{% endif %}
-            {% if item.has_m %}<option value="M">MEDIUM</option>{% endif %}
-            {% if item.has_l %}<option value="L">LARGE</option>{% endif %}
-            {% if item.has_xl %}<option value="XL">X-LARGE</option>{% endif %}
-            {% if item.has_2xl %}<option value="2XL">XX-LARGE</option>{% endif %}
+          <select name="size" required {% if not item.is_active %}disabled{% endif %} style="width: 100%; background: #141414; border: 1px solid #333; color: {% if item.is_active %}#fff{% else %}#555{% endif %}; padding: 0.8rem; font-size: 0.85rem; outline: none; {% if not item.is_active %}cursor: not-allowed;{% endif %}">
+            {% if item.is_active %}
+              <option value="" disabled selected>CHOOSE A SIZE</option>
+              {% if item.has_2xs %}<option value="2XS">2XSMALL</option>{% endif %}
+              {% if item.has_xs %}<option value="XS">XSMALL</option>{% endif %}
+              {% if item.has_s %}<option value="S">SMALL</option>{% endif %}
+              {% if item.has_m %}<option value="M">MEDIUM</option>{% endif %}
+              {% if item.has_l %}<option value="L">LARGE</option>{% endif %}
+              {% if item.has_xl %}<option value="XL">X-LARGE</option>{% endif %}
+              {% if item.has_2xl %}<option value="2XL">XX-LARGE</option>{% endif %}
+            {% else %}
+              <option value="" disabled selected>UNAVAILABLE</option>
+            {% endif %}
           </select>
         </div>
         
-        <button type="submit" class="btn" style="width: 100%;">Add to Cart</button>
+        {% if item.is_active %}
+          <button type="submit" class="btn" style="width: 100%;">Add to Cart</button>
+        {% else %}
+          <button type="button" disabled class="btn" style="width: 100%; background-color: #333; color: #777; border: 1px solid #444; cursor: not-allowed;">
+            OUT OF STOCK
+          </button>
+        {% endif %}
       </form>
     </div>
 
