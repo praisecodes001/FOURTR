@@ -19,7 +19,8 @@ class Product(models.Model):
     has_2xl = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     available_at = models.DateTimeField(null=True, blank=True)
-
+    size_chart = models.ImageField(upload_to='size_charts/', blank=True, null=True)
+    
     def __str__(self):
         return self.name
     @property

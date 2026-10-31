@@ -9,7 +9,7 @@ class ProductImageInline(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'price', 'is_active']
     fieldsets = (
-        (None, {'fields': ('name', 'price', 'image_filename', 'description', 'is_active')}),
+        (None, {'fields': ('name', 'price', 'image_filename', 'size_chart', 'description', 'is_active')}),
         ('Available Sizes', {'fields': ('has_2xs', 'has_xs', 'has_s', 'has_m', 'has_l', 'has_xl', 'has_2xl')}),
     )
     inlines = [ProductImageInline]

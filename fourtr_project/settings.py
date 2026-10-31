@@ -109,3 +109,11 @@ MAINTENANCE_MODE = False  # Set to False when you're done working
 
 MAINTENANCE_MODE_IGNORE_ADMIN_SITE = True
 MAINTENANCE_MODE_IGNORE_SUPERUSER = True
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'store' / 'static']
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# --- ADD THESE MEDIA SETTINGS ---
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
